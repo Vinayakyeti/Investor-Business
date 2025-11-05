@@ -129,6 +129,16 @@ nav {
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     text-align: center;
+    transition: transform 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.card-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
 }
 
 .feature-card h3 {

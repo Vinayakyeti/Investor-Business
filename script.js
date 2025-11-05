@@ -175,7 +175,7 @@ async function loadPosts() {
             const postCard = document.createElement('div');
             postCard.className = 'post-card';
             postCard.innerHTML = `
-                <span class="post-type type-${post.userType}">${post.userType === 'investor' ? '💰 Investor' : '💼 Business'}</span>
+                <span class="post-type type-${post.userType}">${post.userType === 'investor' ? 'Investor' : 'Business'}</span>
                 <h4>${post.title}</h4>
                 <p>${post.description}</p>
                 <p><strong>Budget/Investment:</strong> ${post.budget}</p>
@@ -201,7 +201,7 @@ function updateUIForLoggedInUser(userData) {
     const userInfo = document.getElementById('userInfo');
     userInfo.innerHTML = `
         <h3>Welcome, ${userData.name}!</h3>
-        <p>Account Type: <strong>${userData.userType === 'investor' ? 'Investor 💰' : 'Business Person 💼'}</strong></p>
+        <p>Account Type: <strong>${userData.userType === 'investor' ? 'Investor' : 'Business Person'}</strong></p>
         <p>Email: ${userData.email}</p>
     `;
 
