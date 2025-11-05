@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bridge - Connect Investors & Business</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">🌉 Bridge</div>
+            <div class="nav-links" id="navLinks">
+                <a href="#" onclick="showHome()">Home</a>
+                <a href="#" onclick="showAuth()" id="authLink">Login/Register</a>
+                <a href="#" onclick="showDashboard()" id="dashLink" style="display:none;">Dashboard</a>
+                <a href="#" onclick="logout()" id="logoutLink" style="display:none;">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div id="homePage" class="page active">
+        <div class="hero">
+            <h1>Bridge Between Investors & Business People</h1>
+            <p>Connect entrepreneurs with investors to turn ideas into reality</p>
+            <div class="cta-buttons">
+                <button onclick="showAuth('investor')" class="btn-primary">I'm an Investor</button>
+                <button onclick="showAuth('business')" class="btn-secondary">I have a Business Idea</button>
+            </div>
+        </div>
+        <div class="features">
+            <div class="feature-card">
+                <h3>💼 For Business People</h3>
+                <p>Post your business ideas and connect with potential investors</p>
+            </div>
+            <div class="feature-card">
+                <h3>💰 For Investors</h3>
+                <p>Discover promising business opportunities and invest wisely</p>
+            </div>
+            <div class="feature-card">
+                <h3>🤝 Connect & Grow</h3>
+                <p>Build partnerships that drive success and innovation</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="authPage" class="page">
+        <div class="auth-container">
+            <h2 id="authTitle">Login / Register</h2>
+            <div class="user-type-selector">
+                <button onclick="setUserType('investor')" id="investorBtn" class="type-btn">Investor</button>
+                <button onclick="setUserType('business')" id="businessBtn" class="type-btn">Business Person</button>
+            </div>
+            <form id="authForm">
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <input type="text" id="name" placeholder="Full Name" required>
+                <button type="submit" class="btn-primary">Create Account</button>
+            </form>
+            <p class="toggle-text">Already have an account? <span onclick="toggleAuthMode()">Login here</span></p>
+        </div>
+    </div>
+
+    <div id="dashboardPage" class="page">
+        <div class="dashboard-container">
+            <h2>Dashboard</h2>
+            <div id="userInfo" class="user-info"></div>
+            
+            <div id="postForm" class="post-form">
+                <h3 id="formTitle">Create Post</h3>
+                <form id="createPostForm">
+                    <input type="text" id="postTitle" placeholder="Title" required>
+                    <textarea id="postDescription" placeholder="Description" rows="5" required></textarea>
+                    <input type="text" id="postBudget" placeholder="Budget/Investment Amount" required>
+                    <input type="text" id="postContact" placeholder="Contact Info (Email/Phone)" required>
+                    <button type="submit" class="btn-primary">Post</button>
+                </form>
+            </div>
+
+            <div class="posts-section">
+                <h3 id="postsTitle">All Posts</h3>
+                <div id="postsContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
+<!-- //masuXyuE5cWM65uV -->
+<!-- vinayakyeti3219_db_user -->
