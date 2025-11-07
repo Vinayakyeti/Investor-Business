@@ -5,7 +5,7 @@ A simple web platform connecting investors and entrepreneurs built using HTML, C
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
-![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat&logo=mongodb&logoColor=white)
+![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=flat&logo=firebase&logoColor=black)
 
 ## ✨ Features
 
@@ -13,7 +13,7 @@ A simple web platform connecting investors and entrepreneurs built using HTML, C
 - **Separate Registration** - Different accounts for Investors and Business People
 - **Role-Based Access** - Customized dashboard based on user type
 - **User Profiles** - Store name, email, and account type
-- **Persistent Login** - LocalStorage session management with MongoDB
+- **Persistent Login** - Firebase Authentication with session management
 
 ### 💼 For Business People
 - **Post Business Ideas** - Share proposals with potential investors
@@ -42,65 +42,71 @@ investor-business/
 │
 ├── index.html      # Main HTML structure
 ├── style.css       # All styling (240 lines)
-├── script.js       # App logic & MongoDB operations (215 lines)
-├── firebase.js     # MongoDB configuration (36 lines)
+├── script.js       # App logic & Firebase operations (245 lines)
+├── firebase.js     # Firebase configuration (19 lines)
+├── .env            # Environment variables (not in git)
+├── .env.example    # Example env file
+├── .gitignore      # Git ignore file
 └── README.md       # Documentation
 ```
 
 ## 🚀 Setup Instructions
 
-### 1. Create MongoDB Atlas Account
-1. Go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas/register)
-2. Sign up for a free account
-3. Create a new project (e.g., "InvestorBridge")
-
-### 2. Create a Cluster
-1. Click "Build a Database"
-2. Choose **FREE** shared cluster (M0)
-3. Select a cloud provider and region
-4. Click "Create Cluster" (takes 3-5 minutes)
-
-### 3. Configure Network Access
-1. Go to **Security → Network Access**
-2. Click "Add IP Address"
-3. Click "Allow Access from Anywhere" (0.0.0.0/0)
-4. Click "Confirm"
-
-### 4. Enable Data API
-1. Go to **Services → Data API**
-2. Click "Enable the Data API"
-3. Copy the **Data API URL** (looks like: `https://data.mongodb-api.com/app/data-xxxxx/endpoint`)
-4. Click "Create API Key"
-5. Name it (e.g., "WebAppKey")
-6. Copy the **API Key** (save it securely!)
-
-### 5. Create Database and Collections
-1. Go to **Database → Browse Collections**
-2. Click "Add My Own Data"
-3. Database name: `investor_business`
-4. Collection name: `users`
-5. Click "Create"
-6. Add another collection: `posts`
-
-### 6. Configure the App
-Open `firebase.js` and replace the config:
-
-```javascript
-const MONGODB_CONFIG = {
-    API_URL: 'https://data.mongodb-api.com/app/data-xxxxx/endpoint',
-    API_KEY: 'your-api-key-here',
-    DATABASE: 'investor_business',
-    COLLECTIONS: {
-        USERS: 'users',
-        POSTS: 'posts'
-    }
-};
+### 1. Clone the Repository
+```bash
+git clone https://github.com/Vinayakyeti/Investor-Business.git
+cd Investor-Business
 ```
 
-### 7. Run the App
-1. Open `index.html` in a web browser
-2. Or use Live Server extension in VS Code
-3. Register an account and start using!
+### 2. Set Up Firebase Project
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Create a new project (or use existing)
+3. Enable **Authentication** → Email/Password
+4. Enable **Firestore Database** (start in test mode)
+
+### 3. Configure Environment Variables
+1. Copy `.env.example` to `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Get your Firebase config:
+   - Go to Project Settings → General
+   - Scroll to "Your apps" → Web app
+   - Copy the config values
+
+3. Edit `.env` and add your Firebase credentials:
+   ```
+   VITE_FIREBASE_API_KEY=your_api_key_here
+   VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+   VITE_FIREBASE_PROJECT_ID=your_project_id
+   VITE_FIREBASE_STORAGE_BUCKET=your_project.firebasestorage.app
+   VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+   VITE_FIREBASE_APP_ID=your_app_id
+   ```
+
+### 4. Run the App
+Since this uses environment variables with `import.meta.env`, you'll need a dev server:
+
+**Option A: Using Vite (Recommended)**
+```bash
+npm install -g vite
+vite
+```
+
+**Option B: Using Python**
+```bash
+python -m http.server 8000
+```
+
+**Option C: VS Code Live Server**
+- Install "Live Server" extension
+- Right-click `index.html` → "Open with Live Server"
+
+### 5. Start Using
+1. Open the app in your browser
+2. Register an account (Investor or Business)
+3. Start posting and connecting!
 
 ## 💻 How to Use
 
@@ -156,53 +162,51 @@ const MONGODB_CONFIG = {
 ## 🔧 Technical Details
 
 ### Authentication System
-- **Email/Password** authentication with password hashing
-- User sessions stored in **localStorage**
-- Password hashed using simple hash function
+- **Firebase Authentication** with Email/Password
+- Secure password hashing handled by Firebase
 - Session persists across page reloads
+- Real-time auth state management
 
-### MongoDB Database Structure
+### Firebase Firestore Database Structure
 
 **Users Collection:**
 ```json
 {
-  "_id": ObjectId("..."),
+  "uid": "firebase_user_id",
   "name": "John Doe",
   "email": "john@example.com",
-  "password": "hashed_password",
   "userType": "investor",
-  "createdAt": 1234567890
+  "createdAt": Timestamp
 }
 ```
 
 **Posts Collection:**
 ```json
 {
-  "_id": ObjectId("..."),
   "title": "Tech Startup Investment",
   "description": "Looking to invest...",
   "budget": "$100,000",
   "contact": "john@example.com",
-  "authorId": "user_id",
-  "authorName": "John Doe",
+  "userId": "firebase_user_id",
+  "userName": "John Doe",
   "userType": "investor",
-  "createdAt": 1234567890
+  "createdAt": Timestamp
 }
 ```
 
 ### Key Functions
 
 **Authentication:**
-- `hashPassword()` - Hash user passwords
-- Custom login/register with MongoDB queries
-- `localStorage` for session management
-- Email uniqueness validation
+- Firebase `createUserWithEmailAndPassword()`
+- Firebase `signInWithEmailAndPassword()`
+- `onAuthStateChanged()` listener for session
+- Automatic password hashing and security
 
-**Database Operations (MongoDB Data API):**
-- `insertOne` - Create new user/post
-- `findOne` - Find user by email
-- `find` - Fetch all posts with sorting
-- HTTP POST requests with API key authentication
+**Database Operations (Firestore):**
+- `addDoc()` - Create new user/post
+- `getDocs()` - Fetch all posts with sorting
+- `query()` with `orderBy()` - Sort by creation date
+- Real-time listeners available
 
 **UI Functions:**
 - `showHome()` - Display landing page
@@ -265,84 +269,98 @@ const MONGODB_CONFIG = {
 
 ## 🔒 Security Considerations
 
-### Current Setup (Development)
-- **Simple password hashing** (client-side)
-- **Open Data API access** (API key exposed in frontend)
-- **localStorage** for session management
+### Current Setup
+- **Firebase Authentication** - Industry-standard security
+- **Environment Variables** - Credentials stored in `.env` (not committed)
+- **Gitignore** - `.env` file excluded from version control
+- **Firestore Security Rules** - Currently in test mode
 
 ### Production Recommendations
-1. **Use Backend Server**:
-   - Create Node.js/Express backend
-   - Keep MongoDB credentials on server
-   - Use bcrypt for password hashing
-   - Implement JWT tokens for sessions
+1. **Firestore Security Rules**:
+   ```javascript
+   rules_version = '2';
+   service cloud.firestore {
+     match /databases/{database}/documents {
+       match /users/{userId} {
+         allow read: if request.auth != null;
+         allow write: if request.auth.uid == userId;
+       }
+       match /posts/{postId} {
+         allow read: if request.auth != null;
+         allow create: if request.auth != null;
+         allow update, delete: if request.auth.uid == resource.data.userId;
+       }
+     }
+   }
+   ```
 
-2. **MongoDB Atlas Security**:
-   - Restrict IP addresses in Network Access
-   - Use more secure API keys
-   - Enable MongoDB Atlas App Services for authentication
-   - Implement role-based access control
-
-3. **Data Validation**:
-   - Add input sanitization
+2. **Firebase Security**:
+   - Add authorized domains in Firebase Console
+   - Enable App Check for additional security
+   - Set up Firebase Hosting for HTTPS
    - Implement rate limiting
-   - Add CAPTCHA for registration
-   - Validate email format server-side
-   - Set password strength requirements
 
-4. **Enhanced Security**:
-   - Use HTTPS only
-   - Implement email verification
-   - Add password reset functionality
+3. **Enhanced Security**:
+   - Add email verification
+   - Implement password reset functionality
    - Enable two-factor authentication
+   - Add CAPTCHA for registration
    - Log security events
+
+## ⚠️ Important Security Notes
+
+- **Never commit `.env` file** - It's already in `.gitignore`
+- **Rotate Firebase credentials** if accidentally exposed
+- **Update Firestore rules** before production deployment
+- **Use Firebase Hosting** for automatic HTTPS
 
 ## 🌐 Deployment Options
 
-### Option 1: Netlify
-1. Drag and drop folder to [Netlify](https://app.netlify.com/)
-2. Or connect GitHub repo for auto-deploy
+### Recommended: Firebase Hosting
+```bash
+npm install -g firebase-tools
+firebase login
+firebase init hosting
+firebase deploy
+```
 
-### Option 2: Vercel
-1. Sign up at [Vercel](https://vercel.com)
-2. Import your GitHub repository
-3. Deploy automatically
+### Option 2: Netlify
+1. Install Netlify CLI: `npm install -g netlify-cli`
+2. Run: `netlify deploy`
+3. Add environment variables in Netlify dashboard
 
-### Option 3: GitHub Pages
-1. Push code to GitHub repository
-2. Go to Settings → Pages
-3. Select branch and folder
-4. Save and get URL
+### Option 3: Vercel
+1. Install Vercel CLI: `npm install -g vercel`
+2. Run: `vercel`
+3. Add environment variables in Vercel dashboard
 
-**Note:** For any deployment, ensure your MongoDB Data API allows requests from your domain.
+**Important:** Add your production domain to Firebase Console → Authentication → Settings → Authorized domains
 
 ## 🐛 Troubleshooting
 
 ### Posts Not Loading
-- Verify MongoDB Data API is enabled
-- Check API URL and API key in `firebase.js`
-- Ensure collections `users` and `posts` exist
-- Check browser console for CORS errors
-- Verify network access allows all IPs (0.0.0.0/0)
+- Check Firebase configuration in `.env`
+- Verify Firestore database is created
+- Check browser console for errors
+- Ensure internet connection is stable
 
 ### Authentication Errors
-- Check if user exists in MongoDB (try registering)
-- Verify email is not already registered
+- Verify Email/Password is enabled in Firebase Console
+- Check if email is already registered
+- Ensure `.env` file has correct credentials
 - Check browser console for error messages
-- Ensure MongoDB connection is active
 
-### MongoDB Connection Failed
-- Verify Data API URL is correct
-- Check API Key is valid and active
-- Ensure cluster is running (not paused)
-- Check Network Access settings
+### Environment Variables Not Working
+- Make sure you're using a dev server (Vite, Live Server, etc.)
+- Verify `.env` file is in the root directory
+- Check that variables start with `VITE_`
+- Restart the dev server after changing `.env`
+
+### Firebase Connection Failed
+- Verify all credentials in `.env` are correct
+- Check Firebase project is active
+- Ensure billing is enabled (free tier is fine)
 - Open browser DevTools → Network tab for details
-
-### UI Not Updating
-- Hard refresh browser (Ctrl+F5)
-- Clear browser cache
-- Check JavaScript console for errors
-- Verify Firebase imports are correct
 
 ## 🔮 Future Enhancements
 
@@ -383,11 +401,11 @@ This project is open source and available under the MIT License.
 
 ## 📚 Resources
 
-- [MongoDB Atlas Documentation](https://www.mongodb.com/docs/atlas/)
-- [MongoDB Data API Guide](https://www.mongodb.com/docs/atlas/api/data-api/)
-- [MongoDB Atlas Tutorial](https://www.mongodb.com/docs/atlas/getting-started/)
-- [MongoDB CRUD Operations](https://www.mongodb.com/docs/manual/crud/)
+- [Firebase Documentation](https://firebase.google.com/docs)
+- [Firebase Authentication Guide](https://firebase.google.com/docs/auth)
+- [Firestore Documentation](https://firebase.google.com/docs/firestore)
+- [Firebase Console](https://console.firebase.google.com/)
 
 ---
 
-**Built with 🤝 to connect Investors and Entrepreneurs** | Simple, Functional, Elegant
+**Built with 🤝 to connect Investors and Entrepreneurs** | Simple, Secure, Elegant
